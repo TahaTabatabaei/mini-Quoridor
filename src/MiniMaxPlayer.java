@@ -87,6 +87,12 @@ public class MiniMaxPlayer extends Player{
         return total_score;
     }
 
+    /**
+     * for now, in this commit, its just a MiniMax
+     * no alpha-beta
+     * @param opponent
+     * @return
+     */
     public String get_best_action(MiniMaxPlayer opponent){
         double best_action_value = maxValue(opponent);
         MAX_DEPTH = 2.0;
