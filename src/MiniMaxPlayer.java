@@ -124,33 +124,33 @@ public class MiniMaxPlayer extends Player{
         }
         System.out.println("######################################## " + MAX_DEPTH);
         MAX_DEPTH--;
-        if (this.is_winner()){
+        if (oppState.is_winner()){
             return this.evaluate(oppState);
         }
-        double best_action_value = - (this.INFINITY);
+        double action_value = - (this.INFINITY);
         String best_action = "";
         Set<String> legal_move = new HashSet<String>();
         legal_move = this.get_legal_actions(oppState);
         for (String action : legal_move) {
             this.play(action, true);
 
-            double action_value = this.evaluate(oppState);
+            action_value = this.evaluate(oppState);
             action_value = Math.max(action_value,minValue(this, alpha, beta));
             System.out.println("value at max:" + action_value);
             if (action_value >= beta){
                 return action_value;
             }
-            if (action_value > best_action_value){
-                best_action_value = action_value;
-                best_action = action;
-            }
+//            if (action_value > best_action_value){
+//                best_action_value = action_value;
+//                best_action = action;
+//            }
             alpha = Math.max(alpha, action_value);
 
             this.undo_last_action();
         }
-        System.out.println("best at max: "+best_action_value);
+        System.out.println("best at max: "+alpha);
         MAX_DEPTH++;
-        return best_action_value;
+        return alpha;
     }
 
     private double minValue(MiniMaxPlayer oppState, double alpha, double beta){
@@ -161,33 +161,33 @@ public class MiniMaxPlayer extends Player{
         System.out.println("***************************************** " + MAX_DEPTH);
         MAX_DEPTH--;
         if (this.is_winner()){
-            return this.evaluate(oppState);
+            return -oppState.evaluate(this);
         }
-        double best_action_value = (this.INFINITY);
+        double action_value = (this.INFINITY);
         String best_action = "";
         Set<String> legal_move = new HashSet<String>();
         legal_move = this.get_legal_actions(oppState);
         for (String action : legal_move) {
             this.play(action, true);
 
-            double action_value = -(this.evaluate(oppState));
+            action_value = -oppState.evaluate(this);
             action_value = Math.min(action_value,maxValue(this, alpha, beta));
             System.out.println("value at min:" + action_value);
             if (action_value <= alpha){
                 return action_value;
             }
-            if (action_value < best_action_value){
-                best_action_value = action_value;
-                best_action = action;
-            }
+//            if (action_value < best_action_value){
+//                best_action_value = action_value;
+//                best_action = action;
+//            }
             beta = Math.min(beta,action_value);
 
             this.undo_last_action();
         }
 
-        System.out.println("best at min: "+best_action_value);
+        System.out.println("best at min: "+beta);
         MAX_DEPTH++;
-        return best_action_value;
+        return beta;
     }
 
 }
