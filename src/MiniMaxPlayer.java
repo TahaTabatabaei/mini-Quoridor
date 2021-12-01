@@ -2,7 +2,7 @@ import java.util.*;
 
 public class MiniMaxPlayer extends Player{
 
-    private double MAX_DEPTH = 3.0;
+    private double MAX_DEPTH = 2.0;
     private double INFINITY = 9999.0;
 
     public MiniMaxPlayer(String color, int x, int y, Board board) {
