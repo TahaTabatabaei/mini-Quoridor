@@ -95,7 +95,7 @@ public class MiniMaxPlayer extends Player{
      * @return
      */
     public String get_best_action(MiniMaxPlayer opponent){
-        double best_action_value = maxValue(opponent);
+        double best_action_value = maxValue(opponent,  -(INFINITY), INFINITY);
         MAX_DEPTH = d;
         String best_action = "";
         Set<String> legal_move = new HashSet<String>();
@@ -117,7 +117,7 @@ public class MiniMaxPlayer extends Player{
     }
 
 
-    private double maxValue(MiniMaxPlayer oppState){
+    private double maxValue(MiniMaxPlayer oppState, double alpha, double beta){
         // TODO find best action
         if (MAX_DEPTH <= 0){
             return INFINITY;
@@ -135,12 +135,16 @@ public class MiniMaxPlayer extends Player{
             this.play(action, true);
 
             double action_value = this.evaluate(oppState);
-            action_value = Math.max(action_value,minValue(this));
+            action_value = Math.max(action_value,minValue(this, alpha, beta));
             System.out.println("value at max:" + action_value);
+            if (action_value >= beta){
+                return action_value;
+            }
             if (action_value > best_action_value){
                 best_action_value = action_value;
                 best_action = action;
             }
+            alpha = Math.max(alpha, action_value);
 
             this.undo_last_action();
         }
@@ -149,7 +153,7 @@ public class MiniMaxPlayer extends Player{
         return best_action_value;
     }
 
-    private double minValue(MiniMaxPlayer oppState){
+    private double minValue(MiniMaxPlayer oppState, double alpha, double beta){
         // TODO find worse action
         if (MAX_DEPTH <= 0){
             return -(INFINITY);
@@ -167,12 +171,16 @@ public class MiniMaxPlayer extends Player{
             this.play(action, true);
 
             double action_value = -(this.evaluate(oppState));
-            action_value = Math.min(action_value,maxValue(this));
+            action_value = Math.min(action_value,maxValue(this, alpha, beta));
             System.out.println("value at min:" + action_value);
+            if (action_value <= alpha){
+                return action_value;
+            }
             if (action_value < best_action_value){
                 best_action_value = action_value;
                 best_action = action;
             }
+            beta = Math.min(beta,action_value);
 
             this.undo_last_action();
         }
