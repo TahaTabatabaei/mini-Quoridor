@@ -2,7 +2,8 @@ import java.util.*;
 
 public class MiniMaxPlayer extends Player{
 
-    private double MAX_DEPTH = 2.0;
+    private final double d = 2.0;
+    private double MAX_DEPTH = d;
     private double INFINITY = 9999.0;
 
     public MiniMaxPlayer(String color, int x, int y, Board board) {
@@ -95,7 +96,7 @@ public class MiniMaxPlayer extends Player{
      */
     public String get_best_action(MiniMaxPlayer opponent){
         double best_action_value = maxValue(opponent);
-        MAX_DEPTH = 2.0;
+        MAX_DEPTH = d;
         String best_action = "";
         Set<String> legal_move = new HashSet<String>();
         legal_move = this.get_legal_actions(opponent);
