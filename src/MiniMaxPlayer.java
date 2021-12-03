@@ -89,8 +89,7 @@ public class MiniMaxPlayer extends Player{
     }
 
     /**
-     * for now, in this commit, its just a MiniMax
-     * no alpha-beta
+     * find a value from maxValue and then find the action with this value
      * @param opponent
      * @return
      */
@@ -124,11 +123,11 @@ public class MiniMaxPlayer extends Player{
         }
         System.out.println("######################################## " + MAX_DEPTH);
         MAX_DEPTH--;
-        if (oppState.is_winner()){
+        if (this.is_winner()){
             return this.evaluate(oppState);
         }
         double action_value = - (this.INFINITY);
-        String best_action = "";
+//        String best_action = "";
         Set<String> legal_move = new HashSet<String>();
         legal_move = this.get_legal_actions(oppState);
         for (String action : legal_move) {
@@ -140,28 +139,25 @@ public class MiniMaxPlayer extends Player{
             if (action_value >= beta){
                 return action_value;
             }
-//            if (action_value > best_action_value){
-//                best_action_value = action_value;
-//                best_action = action;
-//            }
             alpha = Math.max(alpha, action_value);
 
             this.undo_last_action();
         }
         System.out.println("best at max: "+alpha);
         MAX_DEPTH++;
-        return alpha;
+        return action_value;
     }
 
     private double minValue(MiniMaxPlayer oppState, double alpha, double beta){
         // TODO find worse action
+        // TODO opp or this?
         if (MAX_DEPTH <= 0){
             return -(INFINITY);
         }
         System.out.println("***************************************** " + MAX_DEPTH);
         MAX_DEPTH--;
-        if (this.is_winner()){
-            return -oppState.evaluate(this);
+        if (oppState.is_winner()){
+            return -this.evaluate(oppState);
         }
         double action_value = (this.INFINITY);
         String best_action = "";
@@ -170,16 +166,12 @@ public class MiniMaxPlayer extends Player{
         for (String action : legal_move) {
             this.play(action, true);
 
-            action_value = -oppState.evaluate(this);
+            action_value = -this.evaluate(oppState);
             action_value = Math.min(action_value,maxValue(this, alpha, beta));
             System.out.println("value at min:" + action_value);
             if (action_value <= alpha){
                 return action_value;
             }
-//            if (action_value < best_action_value){
-//                best_action_value = action_value;
-//                best_action = action;
-//            }
             beta = Math.min(beta,action_value);
 
             this.undo_last_action();
@@ -187,7 +179,7 @@ public class MiniMaxPlayer extends Player{
 
         System.out.println("best at min: "+beta);
         MAX_DEPTH++;
-        return beta;
+        return action_value;
     }
 
 }
