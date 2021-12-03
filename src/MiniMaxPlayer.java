@@ -94,7 +94,7 @@ public class MiniMaxPlayer extends Player{
      * @return
      */
     public String get_best_action(MiniMaxPlayer opponent){
-        double best_action_value = maxValue(opponent,  -(INFINITY), INFINITY);
+        double best_action_value = maxValue(opponent,  -(INFINITY), INFINITY,1);
         MAX_DEPTH = d;
         String best_action = "";
         Set<String> legal_move = new HashSet<String>();
@@ -116,70 +116,60 @@ public class MiniMaxPlayer extends Player{
     }
 
 
-    private double maxValue(MiniMaxPlayer oppState, double alpha, double beta){
+    private double maxValue(MiniMaxPlayer oppState, double alpha, double beta, int depth){
         // TODO find best action
-        if (MAX_DEPTH <= 0){
-            return INFINITY;
-        }
-        System.out.println("######################################## " + MAX_DEPTH);
-        MAX_DEPTH--;
-        if (this.is_winner()){
+        System.out.println("######################################## " + depth);
+
+        if (this.is_winner() || (depth >=2) ){
             return this.evaluate(oppState);
         }
-        double action_value = - (this.INFINITY);
-//        String best_action = "";
+        double best_action_value = - (this.INFINITY);
         Set<String> legal_move = new HashSet<String>();
         legal_move = this.get_legal_actions(oppState);
         for (String action : legal_move) {
             this.play(action, true);
 
-            action_value = this.evaluate(oppState);
-            action_value = Math.max(action_value,minValue(this, alpha, beta));
+            double action_value = Math.max(best_action_value,minValue(oppState, alpha, beta, depth+1));
             System.out.println("value at max:" + action_value);
             if (action_value >= beta){
                 return action_value;
             }
-            alpha = Math.max(alpha, action_value);
+            best_action_value = Math.max(best_action_value, action_value);
+            alpha = Math.max(alpha, best_action_value);
+
 
             this.undo_last_action();
         }
-        System.out.println("best at max: "+alpha);
-        MAX_DEPTH++;
-        return action_value;
+        System.out.println("best at max: "+ best_action_value);
+        return best_action_value;
     }
 
-    private double minValue(MiniMaxPlayer oppState, double alpha, double beta){
+    private double minValue(MiniMaxPlayer oppState, double alpha, double beta, int depth){
         // TODO find worse action
         // TODO opp or this?
-        if (MAX_DEPTH <= 0){
-            return -(INFINITY);
+        System.out.println("***************************************** " + depth);
+        if (this.is_winner() || (depth >=2) ){
+            return this.evaluate(oppState);
         }
-        System.out.println("***************************************** " + MAX_DEPTH);
-        MAX_DEPTH--;
-        if (oppState.is_winner()){
-            return -this.evaluate(oppState);
-        }
-        double action_value = (this.INFINITY);
-        String best_action = "";
+        double best_action_value = (this.INFINITY);
         Set<String> legal_move = new HashSet<String>();
         legal_move = this.get_legal_actions(oppState);
         for (String action : legal_move) {
             this.play(action, true);
 
-            action_value = -this.evaluate(oppState);
-            action_value = Math.min(action_value,maxValue(this, alpha, beta));
+            double action_value = Math.min(best_action_value, maxValue(oppState, alpha, beta, depth+1));
             System.out.println("value at min:" + action_value);
             if (action_value <= alpha){
                 return action_value;
             }
-            beta = Math.min(beta,action_value);
+            best_action_value = Math.min(best_action_value, action_value);
+            beta = Math.min(beta, best_action_value);
 
             this.undo_last_action();
         }
 
-        System.out.println("best at min: "+beta);
-        MAX_DEPTH++;
-        return action_value;
+        System.out.println("best at min: "+ best_action_value);
+        return best_action_value;
     }
 
 }
