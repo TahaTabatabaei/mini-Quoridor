@@ -2,8 +2,8 @@ import java.util.*;
 
 public class MiniMaxPlayer extends Player{
 
-    private final double d = 2.0;
-    private double MAX_DEPTH = d;
+    private final int d = 4;
+    private double MAX_DEPTH = d+0.0;
     private double INFINITY = 9999.0;
 
     public MiniMaxPlayer(String color, int x, int y, Board board) {
@@ -94,82 +94,81 @@ public class MiniMaxPlayer extends Player{
      * @return
      */
     public String get_best_action(MiniMaxPlayer opponent){
-        double best_action_value = maxValue(opponent,  -(INFINITY), INFINITY,1);
-        MAX_DEPTH = d;
-        String best_action = "";
-        Set<String> legal_move = new HashSet<String>();
-        legal_move = this.get_legal_actions(opponent);
-        for (String action : legal_move) {
-            this.play(action, true);
-
-            double action_value = this.evaluate(opponent);
-            if (action_value == best_action_value){
-                best_action = action;
-                this.undo_last_action();
-                return best_action;
-            }
-
-            this.undo_last_action();
-        }
-
-        return best_action;
+        Pair pair;
+        pair = maxValue(opponent,  -(INFINITY), INFINITY,1);
+        return pair.move;
     }
 
 
-    private double maxValue(MiniMaxPlayer oppState, double alpha, double beta, int depth){
+    private Pair maxValue(MiniMaxPlayer oppState, double alpha, double beta, int depth){
         // TODO find best action
         System.out.println("######################################## " + depth);
+        Pair pair;
 
-        if (this.is_winner() || (depth >=2) ){
-            return this.evaluate(oppState);
+        if (this.is_winner() || (depth >=d) ){
+            return new Pair(this.evaluate(oppState),null);
         }
         double best_action_value = - (this.INFINITY);
+        String best_move="";
         Set<String> legal_move = new HashSet<String>();
         legal_move = this.get_legal_actions(oppState);
         for (String action : legal_move) {
             this.play(action, true);
 
-            double action_value = Math.max(best_action_value,minValue(oppState, alpha, beta, depth+1));
-            System.out.println("value at max:" + action_value);
-            if (action_value >= beta){
-                return action_value;
-            }
-            best_action_value = Math.max(best_action_value, action_value);
-            alpha = Math.max(alpha, best_action_value);
-
+            double action_value = -999999;
+            pair = minValue(oppState, alpha, beta, depth+1);
+            System.out.println("value at max:" + (action_value=pair.value));
 
             this.undo_last_action();
+
+            if (best_action_value < action_value){
+                best_action_value = action_value;
+                best_move = action;
+                alpha = Math.max(alpha, best_action_value);
+            }
+            if (best_action_value >= beta){
+                System.out.println("beta cut:" + beta);
+                return new Pair(best_action_value,best_move);
+            }
         }
         System.out.println("best at max: "+ best_action_value);
-        return best_action_value;
+        return new Pair(best_action_value,best_move);
     }
 
-    private double minValue(MiniMaxPlayer oppState, double alpha, double beta, int depth){
+    private Pair minValue(MiniMaxPlayer oppState, double alpha, double beta, int depth){
         // TODO find worse action
         // TODO opp or this?
         System.out.println("***************************************** " + depth);
-        if (this.is_winner() || (depth >=2) ){
-            return this.evaluate(oppState);
+        Pair pair;
+        if (this.is_winner() || (depth >=d) ){
+            return new Pair(this.evaluate(oppState),null);
         }
         double best_action_value = (this.INFINITY);
+        String best_move="";
         Set<String> legal_move = new HashSet<String>();
         legal_move = this.get_legal_actions(oppState);
         for (String action : legal_move) {
             this.play(action, true);
 
-            double action_value = Math.min(best_action_value, maxValue(oppState, alpha, beta, depth+1));
-            System.out.println("value at min:" + action_value);
-            if (action_value <= alpha){
-                return action_value;
-            }
-            best_action_value = Math.min(best_action_value, action_value);
-            beta = Math.min(beta, best_action_value);
+            double action_value=-999999;
+            pair = maxValue(oppState, alpha, beta, depth+1);
+            System.out.println("value at min:" + (action_value=pair.value));
 
             this.undo_last_action();
+
+            if (best_action_value > action_value){
+                best_action_value = action_value;
+                best_move = action;
+                beta = Math.min(beta, best_action_value);
+            }
+            if (best_action_value <= alpha){
+                System.out.println("alpha cut:" + alpha);
+                return new Pair(best_action_value,best_move);
+            }
         }
 
         System.out.println("best at min: "+ best_action_value);
-        return best_action_value;
+        return new Pair(best_action_value,best_move);
     }
 
 }
