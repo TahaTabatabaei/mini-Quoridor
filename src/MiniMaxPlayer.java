@@ -76,6 +76,11 @@ public class MiniMaxPlayer extends Player{
         return self_distance + "," + opponent_distance;
     }
 
+    /**
+     * calculate the difference between absolute distance and actual distance
+     * @param player_dist : actual distance
+     * @return
+     */
     public double is_In_trap(double player_dist){
 
         String player_pos = this.get_position();
@@ -85,9 +90,9 @@ public class MiniMaxPlayer extends Player{
         double pv;
 
         if (this.color.equals("white")){
-            pv = 8 - playerY;
-        }else {
             pv = playerY;
+        }else {
+            pv = 8 - playerY;
         }
 
         if (player_dist - pv > 1){
@@ -103,9 +108,9 @@ public class MiniMaxPlayer extends Player{
         double self_distance = Double.parseDouble(distances.split(",")[0]);
         double opponent_distance  = Double.parseDouble(distances.split(",")[1]);
 
-        double total_score = (5 * opponent_distance -  self_distance)
-                * ( this.walls_count / 1.5) * ( 2.0 * opponent.is_In_trap(opponent_distance)
-                - this.is_In_trap(self_distance)
+        double total_score = (4 * opponent_distance -  self_distance)
+                * (1.5 + this.walls_count / 2.0) - ( this.is_In_trap(self_distance)
+                - 2.0 * opponent.is_In_trap(opponent_distance)
                 );
 
         return total_score;
