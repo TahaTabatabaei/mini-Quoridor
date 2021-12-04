@@ -2,7 +2,7 @@ import java.util.*;
 
 public class MiniMaxPlayer extends Player{
 
-    private final int d = 3;
+    private final int d = 5;
     private double MAX_DEPTH = d+0.0;
     private double INFINITY = 9999.0;
 
@@ -76,14 +76,36 @@ public class MiniMaxPlayer extends Player{
         return self_distance + "," + opponent_distance;
     }
 
+    public double is_In_trap(double player_dist){
+
+        String player_pos = this.get_position();
+        int playerX = Integer.parseInt(player_pos.split(",")[0]);
+        int playerY = Integer.parseInt(player_pos.split(",")[1]);
+
+        double pv;
+
+        if (this.color.equals("white")){
+            pv = 8 - playerY;
+        }else {
+            pv = playerY;
+        }
+
+        if (player_dist - pv > 1){
+            return (player_dist- pv);
+        }else {
+            return 0;
+        }
+    }
+
     public double evaluate(MiniMaxPlayer opponent){
         String distances = this.bfs(opponent);
 //        System.out.println("dddd: " +distances);
         double self_distance = Double.parseDouble(distances.split(",")[0]);
         double opponent_distance  = Double.parseDouble(distances.split(",")[1]);
 
-        double total_score = (5 * opponent_distance - self_distance) * (
-                1 + this.walls_count / 2.0
+        double total_score = (5 * opponent_distance -  self_distance)
+                * ( this.walls_count / 1.5) * ( 2.0 * opponent.is_In_trap(opponent_distance)
+                - this.is_In_trap(self_distance)
                 );
 
         return total_score;

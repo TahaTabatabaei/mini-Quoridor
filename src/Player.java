@@ -267,6 +267,7 @@ public class Player {
         /**
          * get opponent's coordinates
          */
+        final int lBound = 1;
         String opp_pos = opponent_piece.get_position();
         int oppX = Integer.parseInt(opp_pos.split(",")[0]);
         int oppY = Integer.parseInt(opp_pos.split(",")[1]);
@@ -283,7 +284,7 @@ public class Player {
                             /**
                              * we set a limitation on wall placement. it is bounded to just 3 squares from each side
                              */
-                            if ( (Math.abs(oppX-x) <=3)  && (Math.abs(oppY-y) <=3) ) {
+                            if ( (Math.abs(oppX-x) <= lBound)  && (Math.abs(oppY-y) <= lBound) ) {
                                 legal_moves.add(command);
                             }
                         }
