@@ -17,7 +17,7 @@ public class Main {
         while (true){
             String action = white_player.get_best_action(black_player);
 
-            System.out.println(action + "88");
+            System.out.println(action + " :88");
             white_player.play(action, false);
             board.print_map();
             System.out.println(
@@ -36,7 +36,7 @@ public class Main {
 
             action = black_player.get_best_action(white_player);
 
-            System.out.println(action + "77");
+            System.out.println(action + " :77");
             black_player.play(action, false);
             board.print_map();
             System.out.println(

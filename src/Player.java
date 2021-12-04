@@ -264,7 +264,12 @@ public class Player {
                 }
             }
         }
-
+        /**
+         * get opponent's coordinates
+         */
+        String opp_pos = opponent_piece.get_position();
+        int oppX = Integer.parseInt(opp_pos.split(",")[0]);
+        int oppY = Integer.parseInt(opp_pos.split(",")[1]);
         Set<String> orientation = new HashSet<String>();
         orientation.add("vertical");
         orientation.add("horizontal");
@@ -275,7 +280,12 @@ public class Player {
                         String command = "wall#" + this.board.boardMap[y][x].x + "#" + this.board.boardMap[y][x].y + "#" + or;
                         this.put_wall(this.board.boardMap[y][x].x, this.board.boardMap[y][x].y, or);
                         if (this.board.is_reachable(opponent) && this.board.is_reachable(this)){
-                            legal_moves.add(command);
+                            /**
+                             * we set a limitation on wall placement. it is bounded to just 3 squares from each side
+                             */
+                            if ( (Math.abs(oppX-x) <=3)  && (Math.abs(oppY-y) <=3) ) {
+                                legal_moves.add(command);
+                            }
                         }
                         this.remove_wall(command);
                     }
