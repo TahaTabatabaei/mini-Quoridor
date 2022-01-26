@@ -2,7 +2,7 @@ import java.util.*;
 
 public class MiniMaxPlayer extends Player{
 
-    private final int d = 5;
+    private final int d = 4;
     private double MAX_DEPTH = d+0.0;
     private double INFINITY = 9999.0;
 
@@ -129,8 +129,7 @@ public class MiniMaxPlayer extends Player{
 
 
     private Pair maxValue(MiniMaxPlayer oppState, double alpha, double beta, int depth){
-        // TODO find best action
-//        System.out.println("######################################## " + depth);
+
         Pair pair;
 
         if (this.is_winner() || (depth >=d) ){
@@ -146,7 +145,6 @@ public class MiniMaxPlayer extends Player{
             double action_value = -999999;
             pair = minValue(oppState, alpha, beta, depth+1);
             action_value = pair.value;
-//            System.out.println("value at min:" + action_value);
 
             this.undo_last_action();
 
@@ -156,7 +154,6 @@ public class MiniMaxPlayer extends Player{
                 alpha = Math.max(alpha, best_action_value);
             }
             if (best_action_value >= beta){
-//                System.out.println("beta cut:" + beta);
                 return new Pair(best_action_value,best_move);
             }
         }
@@ -165,9 +162,7 @@ public class MiniMaxPlayer extends Player{
     }
 
     private Pair minValue(MiniMaxPlayer oppState, double alpha, double beta, int depth){
-        // TODO find worse action
-        // TODO opp or this?
-//        System.out.println("***************************************** " + depth);
+
         Pair pair;
         if (this.is_winner() || (depth >=d) ){
             return new Pair(this.evaluate(oppState),null);
@@ -182,7 +177,6 @@ public class MiniMaxPlayer extends Player{
             double action_value=-999999;
             pair = maxValue(oppState, alpha, beta, depth+1);
             action_value = pair.value;
-//            System.out.println("value at min:" + action_value);
 
             this.undo_last_action();
 
@@ -192,7 +186,6 @@ public class MiniMaxPlayer extends Player{
                 beta = Math.min(beta, best_action_value);
             }
             if (best_action_value <= alpha){
-//                System.out.println("alpha cut:" + alpha);
                 return new Pair(best_action_value,best_move);
             }
         }

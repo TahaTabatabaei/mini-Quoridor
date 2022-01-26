@@ -51,7 +51,7 @@ public class Main {
 
             if (action.split("#")[0].equals("wall")) walls_count += 1;
 
-            TimeUnit.SECONDS.sleep(3);
+            TimeUnit.SECONDS.sleep(2);
         }
     }
 }
